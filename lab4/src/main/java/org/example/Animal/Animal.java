@@ -6,8 +6,6 @@ import org.example.InterfaceAnimal.LevelVoice;
 import org.example.Uncheked.Unchecked;
 import org.example.Cheked.*;
 
-// создаем собственное проверяемое исключение
-
 public class Animal extends Creature implements InterfaceAnimal {
     String name;
 
@@ -44,25 +42,6 @@ public class Animal extends Creature implements InterfaceAnimal {
             System.out.println(o.hashCode() + " действие " + o.toString() + "а: " + o.toString() + " замолчал");
         } else {
             throw new Unchecked("Введите не пустую строку");
-        }
-    }
-
-    // статический вложенный класс, представляющий рыбу
-    public static class Bear {
-        private String name;
-        private String color;
-
-        public Bear(String name, String color) throws Cheked {
-            this.name = name;
-            this.color = color;
-            // проверяем, что имя не пустое и не содержит цифр или специальных символов
-            if (name == null || name.isEmpty() || !name.matches("[a-zA-Zа-яА-Я]+")) {
-                throw new Cheked("Неверное имя медведя: " + name);
-            }
-        }
-
-        public void swim() {
-            System.out.println(name + " плавает " + color + " шерстью");
         }
     }
 }

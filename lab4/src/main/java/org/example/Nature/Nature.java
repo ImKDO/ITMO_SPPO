@@ -51,4 +51,19 @@ public class Nature extends Creature implements InterfaceNature {
             System.out.println(name + " делает " + sound);
         }
     }
+
+    // нестатический вложенный класс, представляющий растение
+    public class Plant {
+        private String name;
+        private String color;
+
+        public Plant(String name, String color) {
+            this.name = name;
+            this.color = color;
+        }
+
+        public void grow() {
+            System.out.println(name + " растет " + color + " цветом");
+        }
+    }
 }
