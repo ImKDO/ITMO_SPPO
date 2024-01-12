@@ -30,16 +30,16 @@ public class Nature extends Creature implements InterfaceNature {
             }
         }
 
-        // создание объекта локального класса
+
         ActionTask task = new ActionTask(o, action);
 
-        // запуск локального класса в отдельном потоке
+
         new Thread(task).start();
     }
 
 
 
-    // нестатический вложенный класс, представляющий растение
+    // нестатический вложенный класс
     public class Plant {
         private String name;
         private String color;
@@ -54,7 +54,7 @@ public class Nature extends Creature implements InterfaceNature {
         }
     }
 
-    // анонимный класс, реализующий интерфейс InterfaceNature
+    // анонимный класс
     InterfaceNature animal = new InterfaceNature() {
         @Override
         public void do_action(Nature o, String action) {

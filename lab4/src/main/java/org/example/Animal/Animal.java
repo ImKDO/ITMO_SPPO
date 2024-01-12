@@ -45,7 +45,7 @@ public class Animal extends Creature implements InterfaceAnimal {
         }
     }
 
-    // статический вложенный класс, представляющий Медведя
+    // статический вложенный класс
     public static class Bear {
         private String name;
         private String color;
