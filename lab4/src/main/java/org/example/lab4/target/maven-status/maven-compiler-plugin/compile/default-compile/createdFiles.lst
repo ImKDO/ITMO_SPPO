@@ -1,0 +1,7 @@
+org\example\InterfaceAnimal\LevelVoice.class
+org\example\InterfaceAnimal\InterfaceAnimal.class
+org\example\InterfaceHuman\InterfaceHuman.class
+org\example\InterfaceNature\InterfaceNature.class
+org\example\Creature\Creature.class
+org\example\Animal\Animal.class
+org\example\Animal\Animal$Bear.class

@@ -1,0 +1,75 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'abstract class AbstractList
+'abstract AbstractCollection
+'interface List
+'interface Collection
+'
+'List <|-- AbstractList
+'Collection <|-- AbstractCollection
+'
+'Collection <|- List
+'AbstractCollection <|- AbstractList
+'AbstractList <|-- ArrayList
+'
+'class ArrayList {
+'Object[] elementData
+'size()
+'}
+'
+'enum TimeUnit {
+'DAYS
+'HOURS
+'MINUTES
+'}
+abstract class Сreature{
+    String name;
+    equals();
+    toString();
+    hashCode();
+}
+
+
+class Human
+class Nature
+class Animal
+
+
+interface InterfaceAnimal{
+    move();
+    voice();
+}
+interface InterfaceAction{
+    do_action();
+}
+
+enum LevelVoice{
+    High
+    Medium
+    Low
+}
+
+object CR
+object Rabbit
+object Lark
+object Forest
+object Sun
+
+
+Сreature <|-- Human
+Сreature <|-- Nature
+Сreature <|-- Animal
+Animal <|-- Lark
+Animal <|-- Rabbit
+Nature <|-- Forest
+Nature <|-- Sun
+Human <|-- CR
+
+Animal <------ InterfaceAnimal
+Nature <------ InterfaceAction
+Animal <------ LevelVoice
+
+
+
+@enduml
