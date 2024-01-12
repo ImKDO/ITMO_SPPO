@@ -32,8 +32,15 @@ abstract class Сreature{
 
 
 class Human
-class Nature
-class Animal
+class Animal{
+    class Bear(static)
+}
+
+class Nature{
+    class Plant(non-static)
+    local class ActionTask
+    anonymos class InterfaceNature
+}
 
 
 interface InterfaceAnimal{

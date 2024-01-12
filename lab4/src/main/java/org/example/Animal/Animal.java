@@ -44,4 +44,19 @@ public class Animal extends Creature implements InterfaceAnimal {
             throw new Unchecked("Введите не пустую строку");
         }
     }
+
+    // статический вложенный класс, представляющий Медведя
+    public static class Bear {
+        private String name;
+        private String color;
+
+        public Bear(String name, String color) {
+            this.name = name;
+            this.color = color;
+        }
+
+        public void BearGo() {
+            System.out.println(name + " идет " + color + " шерсть");
+        }
+    }
 }

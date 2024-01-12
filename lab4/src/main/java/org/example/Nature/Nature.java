@@ -37,20 +37,7 @@ public class Nature extends Creature implements InterfaceNature {
         new Thread(task).start();
     }
 
-    // статический вложенный класс, представляющий животное
-    public static class Animal {
-        private String name;
-        private String sound;
 
-        public Animal(String name, String sound) {
-            this.name = name;
-            this.sound = sound;
-        }
-
-        public void makeSound() {
-            System.out.println(name + " делает " + sound);
-        }
-    }
 
     // нестатический вложенный класс, представляющий растение
     public class Plant {
@@ -66,4 +53,12 @@ public class Nature extends Creature implements InterfaceNature {
             System.out.println(name + " растет " + color + " цветом");
         }
     }
+
+    // анонимный класс, реализующий интерфейс InterfaceNature
+    InterfaceNature animal = new InterfaceNature() {
+        @Override
+        public void do_action(Nature o, String action) {
+            System.out.println("Природа " + action + " с " + o.name);
+        }
+    };
 }
