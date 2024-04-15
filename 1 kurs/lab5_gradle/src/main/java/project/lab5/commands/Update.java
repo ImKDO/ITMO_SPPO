@@ -26,7 +26,7 @@ public class Update extends Command {
         long id = 0;
         try {
             id = Integer.parseInt(arguments);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
 
         int count = 0;

@@ -9,9 +9,11 @@ import project.lab5.models.CollectionWrapper;
 import project.lab5.models.HumanBeing;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class DumpManager {
@@ -34,11 +36,8 @@ public class DumpManager {
     public static void writeCollection(List<HumanBeing> collection) throws IOException {
         ObjectMapper xmlMapper = new XmlMapper();
 
-
-        File outputFile = new File(path);
+        FileOutputStream outputFile = new FileOutputStream(path);
         xmlMapper.writeValue(outputFile, collection);
-
-
     }
 
     /**
@@ -52,11 +51,16 @@ public class DumpManager {
             CollectionWrapper collectionHumanBeing = new CollectionWrapper(collection);
             XmlMapper xmlMapper = new XmlMapper();
 
-            // Открываем файл XML для чтения
             File inputFile = new File(path);
+            Scanner scanner = new Scanner(inputFile);
+            StringBuilder xmlBuilder = new StringBuilder();
 
+            while (scanner.hasNextLine()) {
+                xmlBuilder.append(scanner.nextLine());
+            }
+            String xml = xmlBuilder.toString();
             // Читаем данные из XML в коллекцию объектов Person
-            List<HumanBeing> personList = xmlMapper.readValue(inputFile, new TypeReference<List<HumanBeing>>() {
+            List<HumanBeing> personList = xmlMapper.readValue(xml, new TypeReference<List<HumanBeing>>() {
             });
             for (HumanBeing person : personList) {
                 person.setCreationDate(LocalDateTime.now());

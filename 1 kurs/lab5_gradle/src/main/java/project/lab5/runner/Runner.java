@@ -21,7 +21,7 @@ import java.util.Scanner;
 public class Runner {
     private final Console console;
     private final CommandManager commandManager;;
-    private final List<String> scriptStack = new ArrayList<>();
+    private final List<String> scriptStack = new ArrayList<>(1024);
     private int lengthRecursion = -1;
 
 
