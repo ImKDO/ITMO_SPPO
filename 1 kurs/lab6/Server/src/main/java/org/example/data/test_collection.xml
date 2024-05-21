@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<collection>
+    <HumanBeing>
+        <id>1</id>
+        <name>123</name>
+        <coordinates>
+            <x>32</x>
+            <y>13.1</y>
+        </coordinates>
+        <realHero>true</realHero>
+        <hasToothpick>true</hasToothpick>
+        <impactSpeed>11.0</impactSpeed>
+        <soundtrackName>123</soundtrackName>
+        <weaponType>HAMMER</weaponType>
+        <mood>RAGE</mood>
+        <car>
+            <name>hello</name>
+            <cool>true</cool>
+        </car>
+    </HumanBeing>
+</collection>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2024-05-21T22:44:19.374123100Z</date>
+  <millis>1716331459374</millis>
+  <nanos>123100</nanos>
+  <sequence>0</sequence>
+  <logger>org.example.Main</logger>
+  <level>SEVERE</level>
+  <class>org.example.Main</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>Сервер начал работу на порту 38423</message>
+</record>
+<record>
+  <date>2024-05-21T22:44:28.295735600Z</date>
+  <millis>1716331468295</millis>
+  <nanos>735600</nanos>
+  <sequence>1</sequence>
+  <logger>org.example.Main</logger>
+  <level>INFO</level>
+  <class>org.example.runner.Runner</class>
+  <method>interactiveMode</method>
+  <thread>1</thread>
+  <message>Подключился клиент</message>
+</record>
