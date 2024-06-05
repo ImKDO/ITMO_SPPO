@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2024-05-31T11:54:07.510799100Z</date>
+  <millis>1717156447510</millis>
+  <nanos>799100</nanos>
+  <sequence>0</sequence>
+  <logger>org.example.Main</logger>
+  <level>SEVERE</level>
+  <class>org.example.Main</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>Сервер начал работу на порту 38423</message>
+</record>
+<record>
+  <date>2024-05-31T11:54:10.867788900Z</date>
+  <millis>1717156450867</millis>
+  <nanos>788900</nanos>
+  <sequence>1</sequence>
+  <logger>org.example.Main</logger>
+  <level>INFO</level>
+  <class>org.example.runner.Runner</class>
+  <method>interactiveMode</method>
+  <thread>1</thread>
+  <message>Подключился клиент</message>
+</record>
+<record>
+  <date>2024-05-31T12:34:57.981985800Z</date>
+  <millis>1717158897981</millis>
+  <nanos>985800</nanos>
+  <sequence>2</sequence>
+  <logger>org.example.Main</logger>
+  <level>SEVERE</level>
+  <class>org.example.runner.Runner</class>
+  <method>interactiveMode</method>
+  <thread>1</thread>
+  <message>Отключение клиента от сервера</message>
+</record>
+<record>
+  <date>2024-05-31T12:34:59.077490900Z</date>
+  <millis>1717158899077</millis>
+  <nanos>490900</nanos>
+  <sequence>3</sequence>
+  <logger>org.example.Main</logger>
+  <level>INFO</level>
+  <class>org.example.console.StandardConsole</class>
+  <method>readln</method>
+  <thread>24</thread>
+  <message>Завершение работы</message>
+</record>
