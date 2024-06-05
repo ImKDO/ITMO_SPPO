@@ -16,7 +16,7 @@ public class DBUtils {
     static {
         PROPS.setProperty("user", "s408891");
         PROPS.setProperty("password", "HlsshGiugV5LnUn9");
-        PROPS.setProperty("ssl", "false");  // Убедитесь, что SSL отключен, если не используете его
+        PROPS.setProperty("ssl", "false");
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -24,7 +24,7 @@ public class DBUtils {
             e.printStackTrace();
         }
     }
-
+    
     public static Connection getConnection() {
         Connection connection = null;
         try {
