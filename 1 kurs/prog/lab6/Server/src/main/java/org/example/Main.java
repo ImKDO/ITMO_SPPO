@@ -1,26 +1,18 @@
 package org.example;
 
 import org.example.commands.*;
-import org.example.console.Console;
 import org.example.console.StandardConsole;
 import org.example.managers.CollectionManager;
 import org.example.managers.CommandManager;
 import org.example.managers.DumpManager;
 import org.example.runner.Runner;
+import org.example.utils.ConsoleMode;
 
-import java.io.*;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.*;
 

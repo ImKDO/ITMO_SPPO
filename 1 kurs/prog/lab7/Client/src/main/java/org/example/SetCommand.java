@@ -1,4 +1,4 @@
-package org.example.network;
+package org.example;
 
 import org.example.models.HumanBeing;
 
@@ -28,15 +28,11 @@ public class SetCommand implements Serializable {
 //        this.scriptStack = scriptStack;
     }
 
-    public static void sendCommand(SetCommand setCommand, ByteBuffer responseBuffer){
-        try {
-            responseBuffer.clear();
-            byte[] byteCommand = serialize(setCommand);
-            ByteBuffer buffer = ByteBuffer.wrap(byteCommand);
-            clientSocket.write(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void sendCommand(SetCommand setCommand, ByteBuffer responseBuffer) throws IOException {
+        responseBuffer.clear();
+        byte[] byteCommand = serialize(setCommand);
+        ByteBuffer buffer = ByteBuffer.wrap(byteCommand);
+        clientSocket.write(buffer);
     }
 
     public static void responseServer(ByteBuffer responseBuffer){

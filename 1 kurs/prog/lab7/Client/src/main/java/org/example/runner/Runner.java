@@ -2,18 +2,17 @@ package org.example.runner;
 
 
 import org.example.AskManager.Ask;
-import org.example.network.Response;
+import org.example.Response;
 import org.example.commands.abstractCommandClass.Command;
-import org.example.util.CommandManager;
+import org.example.CommandManager;
 import org.example.commands.ExecutionResponse;
-import org.example.network.SetCommand;
+import org.example.SetCommand;
 import org.example.console.Console;
 import org.example.models.HumanBeing;
 
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -33,44 +32,36 @@ public class Runner {
     private final List<String> scriptStack = new ArrayList<>(1024);
     private final CommandManager commandManager;
     private int lengthRecursion = -1;
-    private SocketChannel socketChannel;
-    private Selector selector;
-    static int port = 38423;
+    private static int port = 38423;
+    SocketChannel socketChannel;
+
+    private String login;
 
 
-    public Runner(Console console, CommandManager commandManager) {
+
+    public Runner( String login, Console console, CommandManager commandManager, SocketChannel socketChannel ) {
         this.console = console;
         this.commandManager = commandManager;
+        this.socketChannel = socketChannel;
+        this.login = login;
     }
 
     /**
      * Интерактивный режим
      */
     public void interactiveMode() {
-        try {
-            ExecutionResponse commandStatus;
-            String[] userCommand = {"", ""};
-
-            socketChannel = SocketChannel.open();
-            socketChannel.connect(new InetSocketAddress("localhost", port));
-            socketChannel.configureBlocking(false);
-            selector = Selector.open();
-            socketChannel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+        ExecutionResponse commandStatus;
+        String[] userCommand = {"", ""};
 
 
-            while (true) {
+        while (true) {
 
-                console.prompt();
-                userCommand = (console.readln().trim() + " ").split(" ", 2);
+            console.prompt();
+            userCommand = (console.readln().trim() + " ").split(" ", 2);
 
-                userCommand[0] = userCommand[0].trim();
-                userCommand[1] = userCommand[1].trim();
-                sendToServer(userCommand);
-            }
-        } catch (ClosedChannelException e) {
-            console.println("Сервер с портом " + port + " в данный момент недоступен");
-        } catch (IOException e) {
-            console.println("Произошла проблема с обменами данных");
+            userCommand[0] = userCommand[0].trim();
+            userCommand[1] = userCommand[1].trim();
+            sendToServer(userCommand);
         }
     }
 
@@ -162,10 +153,10 @@ public class Runner {
 
 
     /**
-     * Загружает команды.
+     * Отправить команду на сервер + получить ответ
      *
-     * @param userCommand Команда для запуска
-     * @return Код завершения.
+     * @param userCommand
+     * @return
      */
 
     private ExecutionResponse sendToServer(String[] userCommand) {
@@ -190,7 +181,6 @@ public class Runner {
 
                         ExecutionResponse response2 = scriptMode(userCommand[1]);
                         //Отправка запроса на сервер
-
                         SetCommand.sendCommand(setCommand, byteBuffer);
 
                         try {
@@ -203,7 +193,6 @@ public class Runner {
                         ObjectInputStream on = new ObjectInputStream(new ByteArrayInputStream(byteBuffer.array()));
                         Response response = (Response) on.readObject();
                         System.out.println(response.getResponse());
-
                         return new ExecutionResponse(response2.getExitCode(), "\n" + response2.getMessage().trim());
 
 
@@ -218,9 +207,7 @@ public class Runner {
                 case "add", "update":
                     try {
                         int defaultID = -1;
-                        HumanBeing humanBeing = new Ask(console).askHumanBeing(defaultID);
-
-                        console.println(humanBeing.toString());
+                        HumanBeing humanBeing = new Ask(console,login).askHumanBeing(defaultID);
 
                         //Отправка команды на сервер
                         SetCommand.sendCommand(SetCommand
@@ -251,7 +238,6 @@ public class Runner {
 
 
                 case "exit":
-                    System.out.println("12345678");
                     console.println("Выход из клиента");
                     System.exit(0);
                     break;
@@ -283,9 +269,9 @@ public class Runner {
                         try {
                             socketChannel = SocketChannel.open();
                             socketChannel.connect(new InetSocketAddress("localhost", port));
-                            socketChannel.configureBlocking(false);
-                            selector = Selector.open();
-                            socketChannel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+//                            socketChannel.configureBlocking(false);
+//                            selector = Selector.open();
+//                            socketChannel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
                         } catch (IOException ex) {
                         }
                         console.println("Проблемы с сервером, перезайдите позже");

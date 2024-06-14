@@ -3,25 +3,17 @@ package org.example.runner;
 import org.apache.commons.lang3.SerializationUtils;
 import org.example.Collection.ExecutionResponse;
 
-import org.example.Response;
-import org.example.SetCommand;
+import org.example.network.Response;
+import org.example.network.SetCommand;
 import org.example.commands.*;
 import org.example.console.Console;
 import org.example.managers.CommandManager;
 
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 
 import static org.example.Main.logger;
 
@@ -34,7 +26,6 @@ public class Runner {
 
     private ServerSocketChannel serverSocketChannel;
 
-    private final List<String> scriptStack = new ArrayList<>(1024);
     private SocketChannel socketChannel = SocketChannel.open();
 
     private int lengthRecursion = -1;
@@ -134,13 +125,6 @@ public class Runner {
         if (command == null)
             return new ExecutionResponse(false, "Команда '" + list.get(0).toString() + "' не найдена.");
 
-        switch (list.get(0).toString()) {
-            case "exit":
-                Command save = commandManager.getCommands().get("save");
-                save.setDropServer(true);
-                save.apply(list);
-            default:
-                return command.apply(list);
-        }
+        return command.apply(list);
     }
 }

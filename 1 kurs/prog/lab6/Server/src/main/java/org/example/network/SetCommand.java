@@ -2,13 +2,12 @@ package org.example.network;
 
 import org.example.models.HumanBeing;
 
-
-import java.io.*;
+import java.io.IOException;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
 import static org.apache.commons.lang3.SerializationUtils.serialize;
-
 
 public class SetCommand implements Serializable {
     private static SocketChannel clientSocket;
@@ -28,15 +27,11 @@ public class SetCommand implements Serializable {
 //        this.scriptStack = scriptStack;
     }
 
-    public static void sendCommand(SetCommand setCommand, ByteBuffer responseBuffer){
-        try {
-            responseBuffer.clear();
-            byte[] byteCommand = serialize(setCommand);
-            ByteBuffer buffer = ByteBuffer.wrap(byteCommand);
-            clientSocket.write(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void sendCommand(SetCommand setCommand, ByteBuffer responseBuffer) throws IOException {
+        responseBuffer.clear();
+        byte[] byteCommand = serialize(setCommand);
+        ByteBuffer buffer = ByteBuffer.wrap(byteCommand);
+        clientSocket.write(buffer);
     }
 
     public static void responseServer(ByteBuffer responseBuffer){
@@ -108,4 +103,3 @@ public class SetCommand implements Serializable {
 
 //    public int getScriptStack() {return scriptStack;}
 }
-

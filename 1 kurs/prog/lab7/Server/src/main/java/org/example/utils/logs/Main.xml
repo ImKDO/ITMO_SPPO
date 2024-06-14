@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2024-06-08T16:05:03.387363Z</date>
+  <millis>1717862703387</millis>
+  <nanos>363000</nanos>
+  <sequence>0</sequence>
+  <logger>server.project.Main</logger>
+  <level>SEVERE</level>
+  <class>server.project.Main</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>Сервер начал работу на порту 38423</message>
+</record>
+<record>
+  <date>2024-06-08T16:05:04.314872700Z</date>
+  <millis>1717862704314</millis>
+  <nanos>872700</nanos>
+  <sequence>1</sequence>
+  <logger>server.project.Main</logger>
+  <level>INFO</level>
+  <class>server.project.runner.Runner</class>
+  <method>interactiveMode</method>
+  <thread>1</thread>
+  <message>Подключился клиент</message>
+</record>
+<record>
+  <date>2024-06-08T16:06:09.766141100Z</date>
+  <millis>1717862769766</millis>
+  <nanos>141100</nanos>
+  <sequence>2</sequence>
+  <logger>server.project.Main</logger>
+  <level>INFO</level>
+  <class>server.project.console.StandardConsole</class>
+  <method>readln</method>
+  <thread>24</thread>
+  <message>Завершение работы</message>
+</record>
