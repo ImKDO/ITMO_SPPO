@@ -38,8 +38,7 @@ public class Runner {
     private String login;
 
 
-
-    public Runner( String login, Console console, CommandManager commandManager, SocketChannel socketChannel ) {
+    public Runner(String login, Console console, CommandManager commandManager, SocketChannel socketChannel) {
         this.console = console;
         this.commandManager = commandManager;
         this.socketChannel = socketChannel;
@@ -195,7 +194,6 @@ public class Runner {
                         System.out.println(response.getResponse());
                         return new ExecutionResponse(response2.getExitCode(), "\n" + response2.getMessage().trim());
 
-
                     } catch (IOException e) {
                         console.println("Произошли проблемы с обменом данных");
                     } catch (ClassNotFoundException e) {
@@ -207,7 +205,7 @@ public class Runner {
                 case "add", "update":
                     try {
                         int defaultID = -1;
-                        HumanBeing humanBeing = new Ask(console,login).askHumanBeing(defaultID);
+                        HumanBeing humanBeing = new Ask(console, login).askHumanBeing(defaultID);
 
                         //Отправка команды на сервер
                         SetCommand.sendCommand(SetCommand
@@ -248,7 +246,7 @@ public class Runner {
 
                         //Инициализация данных для отправки
                         HumanBeing obj = new HumanBeing(); //1,"23",new Coordinates(),LocalDateTime.now(),
-                        SetCommand setCommand = new SetCommand(userCommand[0], "123", obj, socketChannel);
+                        SetCommand setCommand = new SetCommand(userCommand[0], userCommand[1], obj, socketChannel);
 
                         //Отправка запроса на сервер
                         SetCommand.sendCommand(setCommand, byteBuffer);

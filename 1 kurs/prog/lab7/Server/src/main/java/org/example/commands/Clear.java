@@ -3,11 +3,14 @@ package org.example.commands;
 import org.example.Collection.ExecutionResponse;
 import org.example.console.Console;
 import org.example.managers.CollectionManager;
+import org.example.models.HumanBeing;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  "clear" - очистить коллекцию
@@ -34,8 +37,16 @@ public class Clear extends Command {
 
             pstmt.executeUpdate();
 
-            collectionManager.clearCollection();
+            List<HumanBeing> filteredCollection = collectionManager.getCollection().stream()
+                    .filter(human -> !human.getUser().equals(login))
+                    .collect(Collectors.toList());
 
+
+            collectionManager.clearCollection();
+            collectionManager.getCollection().addAll(filteredCollection);
+
+
+            console.println(collectionManager.getCollection());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

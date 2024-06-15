@@ -28,7 +28,7 @@ public class CountByMood extends Command {
             } catch (Exception e) {
                 return new ExecutionResponse(false, "Введите правильно mood");
             }
-            return new ExecutionResponse("Количество " + mood + " в коллекции равно " + collectionManager.countByMood(mood));
+            return new ExecutionResponse("Количество " + mood + " в коллекции равно " + collectionManager.countByMood(mood, (String) list.get(3)));
         }
     }
 }

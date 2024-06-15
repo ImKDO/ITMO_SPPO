@@ -56,7 +56,20 @@ public class Add extends Command {
 
             pstmt.executeUpdate();
 
-            collectionManager.add(humanBeing);
+            String sqlId = "SELECT id_object FROM collections WHERE user_fk=?";
+            try (PreparedStatement pstmt2 = connection.prepareStatement(sqlId)) {
+                pstmt2.setString(1, login);
+                ResultSet rs = pstmt2.executeQuery();
+                while (rs.next()){
+                    int id_object = rs.getInt(1);
+                    humanBeing.setId(id_object);
+                    console.println(humanBeing);
+                    collectionManager.add(humanBeing);
+
+                }
+
+            }
+
 
             return new ExecutionResponse("HumanBeing успешно добавлен!");
         } catch (SQLException e) {

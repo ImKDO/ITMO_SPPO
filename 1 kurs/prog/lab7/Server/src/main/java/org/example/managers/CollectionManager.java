@@ -161,10 +161,10 @@ public class CollectionManager {
      * @param mood
      * @return
      */
-    public int countByMood(Mood mood){
+    public int countByMood(Mood mood, String login){
         int count = 0;
         for (HumanBeing element: collection){
-            if (element.getMood().equals(mood)){
+            if (element.getMood().equals(mood) & element.getUser().equals(login)){
                 count += 1;
             }
         }

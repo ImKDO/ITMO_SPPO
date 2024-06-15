@@ -6,12 +6,13 @@ import java.io.ObjectOutputStream;
 import java.nio.channels.SocketChannel;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import static org.example.Main.logger;
 import static org.example.dataBase.UserLogin.userLogin;
 
 public class LoginUser {
-    public static String login(Connection connection, ObjectOutputStream oos, ObjectInputStream ois) {
+    public static String login(Connection connection, ObjectOutputStream oos, ObjectInputStream ois, Logger logger, SocketChannel socketChannel) throws IOException {
         try {
 //            ObjectOutputStream oos = new ObjectOutputStream(socketChannel.socket().getOutputStream());
 //            ObjectInputStream ois = new ObjectInputStream(socketChannel.socket().getInputStream());
@@ -30,11 +31,12 @@ public class LoginUser {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.severe("Произошли технические шоколадки в IO с клиентом " + socketChannel.socket().getLocalSocketAddress());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.severe("Произошли технические шоколадки в IO с клиентом " + socketChannel.socket().getLocalSocketAddress());
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            logger.severe("Произошли технические шоколадки в сериализации с клиентом " + socketChannel.socket().getRemoteSocketAddress());
         }
+        return "";
     }
 }

@@ -3,7 +3,11 @@ package org.example.commands;
 import org.example.Collection.ExecutionResponse;
 import org.example.console.Console;
 import org.example.managers.CollectionManager;
+import org.example.models.HumanBeing;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -12,11 +16,13 @@ import java.util.List;
 public class RemoveById extends Command {
     private final Console console;
     private final CollectionManager collectionManager;
+    private final Connection connection;
 
-    public RemoveById(Console console, CollectionManager collectionManager) {
+    public RemoveById(Console console, CollectionManager collectionManager, Connection connection) {
         super("remove_by_id id", "удалить элемент из коллекции по ID");
         this.console = console;
         this.collectionManager = collectionManager;
+        this.connection = connection;
     }
 
     /**
@@ -28,19 +34,35 @@ public class RemoveById extends Command {
     public ExecutionResponse apply(List<Object> list) {
         if (list.get(1).toString().isEmpty())
             return new ExecutionResponse(false, "Неправильное количество аргументов!\nИспользование: '" + getName() + "'");
-        long id = 0;
-        try {
-            id = Long.parseLong(list.get(1).toString().trim());
-        } catch (NumberFormatException e) {
-            return new ExecutionResponse(false, "ID не распознан");
-        }
-        for (int element = 0; element < collectionManager.getCollection().size(); element++) {
-            if(collectionManager.getCollection().get(element).getId() == (int) id){
-                collectionManager.getCollection().remove(element);
-                return new ExecutionResponse( "HumanBeing удален");
-            }
+        String query = "DELETE FROM collections WHERE id_object = ? AND user_fk = ?";
 
+        int id_object = Integer.parseInt( (String) list.get(1));
+        String user = (String) list.get(3);
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id_object);
+            preparedStatement.setString(2,user);
+
+
+            preparedStatement.executeUpdate();
+
+
+            int count = 0;
+            for(int i = 0; i < collectionManager.getCollection().size(); ++i){
+                if(collectionManager.getCollection().get(i).getId() == id_object & collectionManager.getCollection().get(i).getUser().equals(user)){
+                    collectionManager.getCollection().remove(i);
+                    ++count;
+                }
+            }
+            if (count == 1){
+                return new ExecutionResponse("HumanBeing с id " + id_object + " удален");
+            } else {
+                return new ExecutionResponse(false, "Не существующий ID, для " + user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return new ExecutionResponse(false, "Не существующий ID");
+        return new ExecutionResponse("");
     }
 }

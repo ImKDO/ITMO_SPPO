@@ -27,7 +27,7 @@ public class CounterGreaterThanSoundtrackName extends Command {
         String soundtrack = list.get(1).toString();
         int count = 0;
         for (int element = 0; element < collectionManager.getCollection().size(); element++) {
-            if (collectionManager.getCollection().get(element).getSoundtrackName().equals(soundtrack)) {
+            if (collectionManager.getCollection().get(element).getSoundtrackName().equals(soundtrack) & collectionManager.getCollection().get(element).getUser().equals(list.get(3).toString())) {
                 count++;
             }
         }

@@ -5,15 +5,17 @@ import org.example.console.Console;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.channels.SocketChannel;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import static org.example.Main.logger;
 import static org.example.dataBase.UserRegistration.haveRegisterUser;
 import static org.example.dataBase.UserRegistration.registerUser;
 
 public class RegistUser {
-    public static String regist(ObjectInputStream ois, ObjectOutputStream oos, Connection connection){
+    public static String regist(ObjectInputStream ois, ObjectOutputStream oos, Connection connection, Logger logger, SocketChannel socketChannel){
         while(true){
             try {
                 String login = (String) ois.readObject();
@@ -29,11 +31,12 @@ public class RegistUser {
                 registerUser(login, password, connection);
                 return login;
             } catch (IOException e) {
-                logger.severe("Произошла ошибка при принятии клиента");
+                logger.severe("Произошли технические шоколадки в IO с клиентом " + socketChannel.socket().getRemoteSocketAddress());
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                logger.severe("Произошли технические шоколадки с sql запросом с клиентом " + socketChannel.socket().getRemoteSocketAddress());
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                logger.severe("Произошли технические шоколадки в сериализации с клиентом " + socketChannel.socket().getRemoteSocketAddress());
+
             }
         }
     }
