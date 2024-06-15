@@ -166,6 +166,7 @@ public class Runner {
             System.exit(0);
 
         } else if (command == null) {
+            console.println(userCommand[0].trim() == "show");
             console.println("Команда '" + userCommand[0] + "' не найдена.");
         } else {
             ByteBuffer byteBuffer = ByteBuffer.allocate(500_000_000);
@@ -281,4 +282,3 @@ public class Runner {
         return new ExecutionResponse("ad");
     }
 }
-

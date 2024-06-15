@@ -41,7 +41,7 @@ public class SetCommand implements Serializable {
         try {
             clientSocket.read(responseBuffer);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Произошли шоколадки с IO (скорее всего офнулся сервер)");
         }
 
     }

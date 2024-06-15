@@ -20,12 +20,10 @@ import static org.example.users.Login.login;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static int port = 38423;
+    static int port = 1242;
 
     public static void main(String[] args) {
-        SocketChannel socketChannel;
-
-
+        SocketChannel socketChannel = null;
         var console = new StandardConsole();
 
         var commandManager = new CommandManager() {{
@@ -46,10 +44,11 @@ public class Main {
         }};
 
         try {
-            //Подъем клиента
+            // Подключение клиента к серверу
             socketChannel = SocketChannel.open();
             socketChannel.connect(new InetSocketAddress("localhost", port));
-            //Авторизация или регистрация
+
+            // Авторизация или регистрация
             String login = "";
             while (true) {
                 console.println("Регистрация или авторизация? (reg, log)");
@@ -70,11 +69,17 @@ public class Main {
 
             new Runner(login, console, commandManager, socketChannel).interactiveMode();
         } catch (ClosedChannelException e) {
-            console.println("Сервер с портом " + port + " в данный момент недоступен");
+            console.printError("Сервер с портом " + port + " в данный момент недоступен");
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            console.println("Произошла проблема с обменами данных");
+            console.printError("Произошла проблема с обменом данных: " + e.getMessage());
+        } finally {
+            try {
+                if (socketChannel != null && socketChannel.isOpen()) {
+                    socketChannel.close();
+                }
+            } catch (IOException e) {
+                console.printError("Ошибка при закрытии соединения: " + e.getMessage());
+            }
         }
     }
-
 }

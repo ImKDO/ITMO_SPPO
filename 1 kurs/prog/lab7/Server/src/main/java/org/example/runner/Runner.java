@@ -64,29 +64,29 @@ public class Runner {
      */
     public void run() {
 //        while (true) {
-            List<Object> userCommand = new ArrayList<>(3);
-            userCommand.add("");
-            userCommand.add("");
-            userCommand.add("");
-            userCommand.add("");
-            userCommand.add("");
-            userCommand.add("");
+        List<Object> userCommand = new ArrayList<>(3);
+        userCommand.add("");
+        userCommand.add("");
+        userCommand.add("");
+        userCommand.add("");
+        userCommand.add("");
+        userCommand.add("");
 
-            console.println("adasdsa");
 
-            requestReaderPool.execute(() -> {
+        requestReaderPool.execute(() -> {
             try {
                 while (true) {
-                        ObjectInputStream objectInputStream = new ObjectInputStream(socketChannel.socket().getInputStream());
-                        //Получение команды
-                        SetCommand setCommand = (SetCommand) objectInputStream.readObject();
-
-                        //Обработка введенных данных
-                        userCommand.set(0, setCommand.getCommand());
-                        userCommand.set(1, setCommand.getArgs());
-                        userCommand.set(2, setCommand.getHumanBeing());
-                        userCommand.set(3, login);
-                        RequestProcessorPool(userCommand);
+                    ObjectInputStream objectInputStream = new ObjectInputStream(socketChannel.socket().getInputStream());
+                    //Получение команды
+                    SetCommand setCommand = (SetCommand) objectInputStream.readObject();
+                    console.println("adasdsa");
+                    console.println(setCommand.getCommand());
+                    //Обработка введенных данных
+                    userCommand.set(0, setCommand.getCommand());
+                    userCommand.set(1, setCommand.getArgs());
+                    userCommand.set(2, setCommand.getHumanBeing());
+                    userCommand.set(3, login);
+                    RequestProcessorPool(userCommand);
                 }
 
             } catch (SocketException e) {
@@ -95,61 +95,61 @@ public class Runner {
                     socketChannel = serverSocketChannel.accept();
                     logger.info("Подключился клиент");
                 } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                    logger.info("Проблемы с IO");
                 }
 //                break;
             } catch (EOFException e) {
-                e.printStackTrace();
+
                 console.println("Достигнут конец потока. Возможно, сервер закрыл соединение.");
 //                break;
             } catch (ClassNotFoundException e) {
                 console.println("Класс сериализованного объекта не найден.");
-                e.printStackTrace();
+
             } catch (IOException e) {
                 logger.severe("Произошла ошибка ввода-вывода при чтении из потока. (Возможно клиент отключился)");
                 e.printStackTrace();
 //                break;
             } catch (Exception e) {
                 console.println("Произошла непредвиденная ошибка.");
-                e.printStackTrace();
+
             }
 
-            });
+        });
 //        }
     }
 
     private void RequestProcessorPool(List<Object> userCommand) {
         requestProcessorPool.execute(() -> {
             lock.writeLock().lock();
-        ExecutionResponse commandStatus;
-        try {
-            //Запуск команды
-            logger.info("Сервер получил запрос команды " + userCommand.get(0));
-            commandStatus = launchCommand(userCommand, commandManager);
-        } finally {
+            ExecutionResponse commandStatus;
+            try {
+                //Запуск команды
+                logger.info("Сервер получил запрос команды " + userCommand.get(0));
+                commandStatus = launchCommand(userCommand, commandManager);
+            } finally {
                 lock.writeLock().unlock();
-        }
-        sendingPool(userCommand, commandStatus);
+            }
+            sendingPool(userCommand, commandStatus);
 
         });
     }
 
     private void sendingPool(List<Object> userCommand, ExecutionResponse commandStatus) {
         responseSendingPool.execute(() -> {
-        try {
-            lock.readLock().lock();
             try {
-                //Отправка ответа
-                response(commandStatus.getMessage(), socketChannel);
+                lock.readLock().lock();
+                try {
+                    //Отправка ответа
+                    response(commandStatus.getMessage(), socketChannel);
 
-                logger.info("Сервер отправил ответ-исполнение команды " + userCommand.get(0));
-            } finally {
-                lock.readLock().unlock();
+                    logger.info("Сервер отправил ответ-исполнение команды " + userCommand.get(0));
+                } finally {
+                    lock.readLock().unlock();
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         });
     }
 

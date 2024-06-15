@@ -23,6 +23,6 @@ public class ExecuteScript extends Command implements Executable {
     @Override
     public ExecutionResponse apply(String arguments) {
         if (arguments.isEmpty()) return new ExecutionResponse(false, "Неправильное количество аргументов!\nИспользование: '" + getName() + "'");
-        return new ExecutionResponse("");
+        return new ExecutionResponse("Выполнение скрипта '" + arguments + "'...");
     }
 }

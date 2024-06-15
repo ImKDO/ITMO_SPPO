@@ -23,24 +23,19 @@ public class ConsoleMode  implements Runnable{
             console.prompt();
             String args = console.readln().trim();
             if(args.equals("exit")) {
-                try {
-                    collectionManager.saveCollection();
-                } catch (IOException | JAXBException e) {
-                    logger.severe("Непредвидимый разрыв соединения с клиентом");
-                }
                 logger.severe("Дроп сервера");
                 System.exit(0);
             }
-            if(args.equals("save")) {
-                try {
-                    collectionManager.saveCollection();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } catch (JAXBException e) {
-                    logger.severe("Непредвидимый разрыв соединения с клиентом");
-                }
-                logger.severe("Сохранение коллекции со стороны сервера");
-            }
+//            if(args.equals("save")) {
+//                try {
+//                    collectionManager.saveCollection();
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                } catch (JAXBException e) {
+//                    logger.severe("Непредвидимый разрыв соединения с клиентом");
+//                }
+//                logger.severe("Сохранение коллекции со стороны сервера");
+//            }
         }
     }
 }

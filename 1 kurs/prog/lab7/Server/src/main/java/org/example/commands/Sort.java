@@ -28,9 +28,6 @@ public class Sort extends Command{
 
     @Override
     public ExecutionResponse apply(List<Object> list) {
-        if (list.get(1).toString().isEmpty())
-            return new ExecutionResponse(false, "Неправильное количество аргументов!\nИспользование: '" + getName() + "'");
-
         Comparator<HumanBeing> sortHumanBeing = new sortHumanBeing();
 
 // Сортируем коллекцию с использованием Stream API и собираем в список

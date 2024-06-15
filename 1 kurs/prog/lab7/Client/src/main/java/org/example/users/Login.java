@@ -21,6 +21,7 @@ public class Login {
                 String login = console.readln();
                 login = login.trim();
 
+
                 oos.writeObject(login);
 
 

@@ -43,7 +43,7 @@ public class Update extends Command {
             while (rs.next()){
                 int id = rs.getInt(1);
                 if(id == 0){
-                    return new ExecutionResponse("HumanBeing с таким id не существует!");
+                    return new ExecutionResponse("HumanBeing с id " + id_object + " для пользователя " + user_fk + " не существует!");
                 } else {
                     break;
                 }
@@ -125,6 +125,6 @@ public class Update extends Command {
         } catch (SQLException e) {
             System.err.println("Ошибка при регистрации пользователя: " + e.getMessage());
         }
-        return new ExecutionResponse("HumanBeing успешно добавлен!");
+        return new ExecutionResponse("HumanBeing успешно Обновлен!");
     }
 }
