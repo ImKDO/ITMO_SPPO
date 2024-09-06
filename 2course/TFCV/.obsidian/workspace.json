@@ -1,0 +1,178 @@
+{
+  "main": {
+    "id": "ffe974c7d1114ed0",
+    "type": "split",
+    "children": [
+      {
+        "id": "8481e233376e1a34",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c91bddc94a21828d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Комплексные числа.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "093cd8cabbce971d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "fdc73e2aec81a0fc",
+    "type": "split",
+    "children": [
+      {
+        "id": "0455c17709922b74",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5f7714866cd518bc",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "a3d0e9a48748d4d7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "5a3477d62aea5cc3",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "20f646047b76163f",
+    "type": "split",
+    "children": [
+      {
+        "id": "b44e96093e657906",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4d55b3a8ba3f7d51",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "README.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "0b5afdc01ad43361",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "README.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "97cf6fdd9781dfc8",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "ba5624ca7f60b4fd",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "README.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "093cd8cabbce971d",
+  "lastOpenFiles": [
+    "Комплексные числа.md",
+    "README.md",
+    "files/Pasted image 20240907000659.png",
+    "files/Pasted image 20240906233440.png",
+    "files/Pasted image 20240906233234.png",
+    "files/Pasted image 20240906231831.png",
+    "files",
+    "Новая папка",
+    "Разбаловка.md",
+    "Pasted image 20240907000659.png",
+    "Pasted image 20240906233440.png",
+    "Pasted image 20240906233234.png",
+    "Pasted image 20240906231831.png"
+  ]
+}
