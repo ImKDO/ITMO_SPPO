@@ -4,16 +4,22 @@ import java.nio.charset.StandardCharsets
 
 
 fun main() {
-    var fcgiInterface = FCGIInterface();
+    var fcgiInterface = FCGIInterface()
     while (fcgiInterface.FCGIaccept() >= 0) {
+
         var content = """
                 <html>
                 <head><title>Java FastCGI Hello World</title></head>
                 <body><hi>Hello, World!</h1></body>
                 </html>";
                 """
-                var httpResponse =
-                """HTTP/1.1 200 OK
+
+        var readRequest = readRequestBody().also {
+            println(it)
+        }
+
+        var httpResponse =
+            """HTTP/1.1 200 OK
                 Content-Type: text/html
                 Content-Length: %d
                 
@@ -38,8 +44,3 @@ private fun readRequestBody(): String {
     buffer.clear()
     return String(requestBodyRaw, StandardCharsets.UTF_8)
 }
-
-
-//fun script(x: Int, y: Int, r: Int): String {
-//    if ()
-//}
