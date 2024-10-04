@@ -26,48 +26,68 @@
     </div>
 </header>
 <img src="imgs/asd.gif" style="width: 25%;">
+<p style="width: 100% ; text-align: center">Введите данные для формы:</p>
+
 <main>
-    <p>Введите данные:</p>
     <div class="form_for_img">
         <div class="check_dot grid_form_layout">
             <div id="x" class="check_dot_block_X">
                 X:
                 <form class="check_dot_blocks">
-                    <input type="button" value="-2" lang="X_button">
-                    <input type="button" value="-1" lang="X_button">
-                    <input type="button" value="0" lang="X_button">
-                    <input type="button" value="0" lang="X_button">
-                    <input type="button" value="0" lang="X_button">
-                    <input type="button" value="0" lang="X_button">
-                    <input type="button" value="0" lang="X_button">
-                    <input type="button" value="0" lang="X_button">
-                    <input type="button" value="0" lang="X_button">
-
+                    <input class="styleInput" type="button" value="-3" lang="X_button">
+                    <input class="styleInput" type="button" value="-2" lang="X_button">
+                    <input class="styleInput" type="button" value="-1" lang="X_button">
+                    <input class="styleInput" type="button" value="0" lang="X_button">
+                    <input class="styleInput" type="button" value="1" lang="X_button">
+                    <input class="styleInput" type="button" value="2" lang="X_button">
+                    <input class="styleInput" type="button" value="3" lang="X_button">
+                    <input class="styleInput" type="button" value="4" lang="X_button">
+                    <input class="styleInput" type="button" value="5" lang="X_button">
                 </form>
             </div>
-
-            <form id="y" class="check_dot_blocks">
-                Y:
-                <input type="text" id="textInput" maxlength="5">
-            </form>
-            <button id="submitBtn_dot" class="check_dot_blocks">Проверить точку</button>
+            <div id="y">
+                <form class="check_dot_blocks styleInput">
+                    Y:
+                    <input class="styleInput" id="textInput" maxlength="5" type="text">
+                </form>
+            </div>
+            <div class="styleInput">
+                <button id="submitBtn_dot" class="check_dot_blocks styleInput">Проверить точку</button>
+            </div>
 
         </div>
-
-        <form id="radius">
-            R:
-            <input type="radio" name="radius" value="10">1
-            <input type="radio" name="radius" value="5">2
-            <input type="radio" name="radius" value="24">3
-        </form>
-
-        <button onclick="drawGraph()" id="submitBtn">Отправить данные</button>
+        <div class="styleInput">
+            <form id="radius">
+                R:
+                <input type="radio" name="radius" value="1">1
+                <input type="radio" name="radius" value="1.5">1.5
+                <input type="radio" name="radius" value="2">2
+                <input type="radio" name="radius" value="2.5">2.5
+                <input type="radio" name="radius" value="3">3
+            </form>
+            <button onclick="drawGraph()" id="submitBtn" class="styleInput">Отправить данные</button>
+        </div>
         <div id="draw_img">
             <canvas id="Canvas" width="500" height="400"></canvas>
         </div>
     </div>
-
-
+    <div class="resTable" id="resultTable">
+        <table>
+            <thead>
+            <tr>
+                <th>x</th>
+                <th>y</th>
+                <th>R</th>
+                <th>Попал?</th>
+                <th>Время</th>
+                <th>Time</th>
+            </tr>
+            </thead>
+            <tbody id="resultTableBody">
+            <!-- Здесь будут строки таблицы -->
+            </tbody>
+        </table>
+    </div>
 </main>
 </body>
 <script src="js/main.js"></script>

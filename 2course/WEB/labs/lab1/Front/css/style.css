@@ -25,28 +25,22 @@ header {
 }
 
 main {
+    display: grid;
+    background-color: #e18286;
+    grid-template-columns: 1fr 1fr 1fr;
 
+    /*grid-template-row;*/
     width: 100%;
-    height: 100%;
 }
 
 .form_for_img {
-    display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
+    width: 100%;
+    height: 100%;
     background-color: #DFDBE5;
-    /*background-position-x: left;*/
-    /*padding: 10px;*/
-}
-
-.grid_form_layout {
-    display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
 }
 
 .check_dot_block_X {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+    text-align: center;
 }
 
 input[lang="X_button"]:hover {
@@ -58,35 +52,75 @@ input[lang="X_button"]:active {
 }
 
 #x {
-    display: flex;
-    justify-content: center;
-    text-align: center;
+    padding: 3%;
 }
 
 #y {
-    display: flex;
-    flex-direction: column;
     text-align: center;
-    justify-content: center;
 }
-.check_dot_blocks:hover{
+
+.check_dot_blocks:hover {
     color: red;
 }
+
 #radius {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
 }
-#draw_img{
-    display: flex;
-    justify-content: center;
-    border:1px solid #000000
-}
-#Canvas{
-    border:1px solid #000000
 
+#submitBtn {
+    padding: 15px;
 }
-#textInput {
+
+.styleInput {
+    width: 100%; /* Полная ширина внутри контейнера */
+    padding: 10px;
     text-align: center;
+    box-sizing: border-box; /* Учитываем паддинги и границы */
+    border: 1px solid #ccc; /* Добавляем границу */
+    border-radius: 4px; /* Закругленные углы */
+    font-size: 16px; /* Увеличиваем размер шрифта */
 }
 
+#draw_img {
+    display: flex;
+    justify-content: center;
+    border: 1px solid #000000
+}
+
+#Canvas {
+    border: 1px solid #000000
+}
+
+/*.resTable {*/
+/*    display: grid;*/
+/*    grid-template-columns: repeat(6,1fr);*/
+/*    white-space: pre-wrap; !* Сохранение пробелов и перенос при переполнении *!*/
+/*    word-break: break-all; !* Перенос слов при переполнении *!*/
+/*    overflow-wrap: break-word; !* Перенос слов при необходимости *!*/
+/*    text-align: center;*/
+/*    width: 100%;*/
+/*}*/
+
+/*.resTable_blocks {*/
+/*    width: 100%;*/
+/*    padding: 5px;*/
+/*}*/
+.resTable {
+    width: 100%;
+    border-collapse: collapse; /* Убирает двойные границы между ячейками */
+}
+
+.resTable th, .resTable td {
+    padding: 10px; /* Паддинг для ячеек */
+    text-align: center; /* Центрирование текста */
+    border: 1px solid #ccc; /* Граница ячеек */
+}
+
+.resTable th {
+    width: 100%;
+    background-color: #e18286; /* Цвет фона для заголовка */
+    color: white; /* Цвет текста для заголовка */
+}
