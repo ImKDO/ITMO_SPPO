@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<head>
+    <title>Верстка с тремя блоками</title>
+<!--    <h:outputStylesheet name="css/clock.css"/>-->
+
+</head>
+<body>
+<h:form>
+    <!-- Контейнер с флексом -->
+    <div style="display: flex; justify-content: space-between; width: 80%; margin: 0 auto; height: 90%; background-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); padding: 20px;">
+
+        <!-- Левая колонка (график) -->
+        <div style="width: 45%; background-color: #e2e2e2; padding: 10px; border-radius: 8px;">
+            <h2 style="text-align: center;">График</h2>
+            <!-- Место для графика -->
+            <div style="height: 200px; background-color: #bdbdbd; text-align: center; line-height: 200px;">
+                График
+            </div>
+        </div>
+        <!-- Кнопки для увеличения и уменьшения -->
+        <div style="">
+            <h:commandButton value="Увеличить" action="#{paramBean.increase}" styleClass="btn"/>
+            <h:commandButton value="Уменьшить" action="#{paramBean.decrease}" styleClass="btn"/>
+        </div>
+        <!-- Правая колонка -->
+        <div style="display: flex; flex-direction: column; justify-content: space-between; width: 45%; padding: 10px; background-color: #f9f9f9; border-radius: 8px; height: 100%;">
+
+            <h:form id="paramForm">
+                <!-- Параметр 1 -->
+                <h:outputLabel for="param1" value="Параметр 1: " />
+                <h:inputText id="param1" value="#{paramBean.param1}" label="Параметр 1" /><br/><br/>
+
+                <!-- Параметр 2 -->
+                <h:outputLabel for="param2" value="Параметр 2: " />
+                <h:inputText id="param2" value="#{paramBean.param2}" label="Параметр 2" /><br/><br/>
+
+                <!-- Параметр 3 -->
+                <h:outputLabel for="param3" value="Параметр 3: " />
+                <h:inputText id="param3" value="#{paramBean.param3}" label="Параметр 3" /><br/><br/>
+
+                <!-- Кнопка для применения параметров -->
+                <p:commandButton value="Применить" action="#{paramBean.applyParameters}" update="paramForm" /><br/><br/>
+
+                <h:inputText id="sliderInput" value="#{paramBean.sliderValue}" />
+                <p:slider for="sliderInput" value="#{paramBean.sliderValue}" minValue="0" maxValue="100" />
+
+            </h:form>
+
+            <!-- Блок с результатами -->
+            <div style="flex-grow: 1; margin-bottom: 20px; background-color: #ffffff; padding: 15px; border-radius: 8px;">
+                <h3>Результаты</h3>
+                <div style="background-color: #dcdcdc; padding: 15px; border-radius: 8px;">
+                    <h:outputText value="#{paramBean.result}" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</h:form>
+</body>
+</html>
