@@ -2,13 +2,26 @@
 import itertools
 import math
 
+def euclidean_norm(matrix):
+    norm = 0
+    for row in matrix:
+        for element in row:
+            norm += element ** 2
+    return norm ** 0.5
 
 def get_n(type_input, file_content=None):
     if type_input == "i":
         while True:
             print("Введите размерность n <= 20 матрицы nxn")
             try:
-                n = int(input().strip())
+                n_check = float(input().strip())
+                n = int(n_check)
+                if abs(n) != n:
+                    print("n не может быть отрицательным")
+                    continue
+                if (n - n_check) != 0:
+                    print("n не может быть дробным")
+                    continue
             except ValueError:
                 print("Введите правильное значение n")
                 continue
@@ -36,7 +49,7 @@ def get_accuracy(input_str, file_content=None):
             except ValueError:
                 print("Введите валидную точность")
                 continue
-            return acc
+            return 10**(-acc)
     else:
         accuracy = 0
         try:
@@ -44,7 +57,7 @@ def get_accuracy(input_str, file_content=None):
         except ValueError:
             print("Введите валидную точность")
             exit(1)
-        return accuracy
+        return 10**(-accuracy)
 
 # Получаем с обработкой матрицу
 def print_matrix(matrix):
@@ -61,7 +74,8 @@ def get_matrix(input_str, n, file_content=None):
         while len(matrix) != n:
             strings = []
             try:
-                strings = list(map(float, input().strip().split()))
+                strings = list(input().strip().split())
+                strings = [float(i.replace(",", ".")) for i in strings]
                 b_vec.append(strings[n])
                 if len(strings) != (n+1) :
                     print(f"Введите строку размера {n+1}")
@@ -69,7 +83,6 @@ def get_matrix(input_str, n, file_content=None):
             except ValueError:
                 return [], [], False
             matrix.append(strings)
-        # print(b_vec)
         return b_vec, matrix, True
     else:
         for strings in range(1, n + 1):
@@ -84,23 +97,27 @@ def get_matrix(input_str, n, file_content=None):
             except ValueError:
                 print("Невалидные значения для матрицы")
                 exit(1)
-        # print(b_vec)
-        # print_matrix(matrix)
         return b_vec, matrix
 
 def check_diagonal_predominance(A):
     for i in range(len(A)):
-        sum = 0
-        for j in range(len(A)):
-            if i != j:
-                sum += abs(A[i][j])
-        if abs(A[i][i]) < sum:
+        row_sum = sum(abs(A[i][j]) for j in range(len(A)) if i != j)
+        if abs(A[i][i]) < row_sum:
             return False
     return True
 
+
 def permute_matrix_dynamic(matrix):
-    for perm in itertools.permutations(matrix):
-        yield perm
+    def permute(arr, l, r):
+        if l == r:
+            yield [row[:] for row in arr]
+        else:
+            for i in range(l, r):
+                arr[l], arr[i] = arr[i], arr[l]  # Swap rows
+                yield from permute(arr, l + 1, r)
+                arr[l], arr[i] = arr[i], arr[l]  # Swap back
+
+    yield from permute(matrix, 0, len(matrix))
 
 def go_to_itteration(vec_x, base_reccurent):
     vec_approx = []
@@ -112,30 +129,52 @@ def go_to_itteration(vec_x, base_reccurent):
         vec_sol.append(sum)
         vec_approx.append(vec_sol)
 
+
 def method_Gauss_Zeidel(A, b, acc):
-    vec_x = []
-    # print_matrix(A)
-    for i in range (len(A)):
-        x_i = []
-        # for j in range(len(A)):
-        for j in range(len(A[i])):
-            if j != i:
-                x_i.append(-A[i][j]/A[i][i])
-        x_i.insert(0,b[i]/A[i][i])
-        vec_x.append(x_i)
-    print_matrix(vec_x)
-    base_vec_x = b.copy()
+    A = [row[:] for row in A]
+    b = b[:]
 
     flag = False
     for perm in permute_matrix_dynamic(A):
-        for row in perm:
-           flag = check_diagonal_predominance(row)
-           if flag: break
-        if flag: break
+        # Переставляем b так же, как A, по правильным индексам
+        perm_b = [b[i] for i in range(len(A)) if A[i] in perm]
+
+        print("-------------------------------------------------------")
+        for row, b_val in zip(perm, perm_b):
+            print(row, "→", b_val)  # Теперь показывает правильно!
+        print("-------------------------------------------------------")
+
+        if check_diagonal_predominance(perm):
+            A = [row[:] for row in perm]
+            b = perm_b[:]
+            flag = True
+            break
+
     if not flag:
-        print("Эта система не достигает диагонального преобладания, пошел нахуй")
+        print("Система не достигает диагонального преобладания, метод может не сойтись.")
+        return None
 
+    # Начальное приближение (нулевой вектор)
+    x = [0] * len(A)
 
+    # Итерации
+    diff = float('inf')
+    k = 0
+    while diff > acc:
+        x_old = x[:]
+        for i in range(len(A)):
+            sum1 = sum(A[i][j] * x[j] for j in range(i))  # Сумма до i
+            sum2 = sum(A[i][j] * x_old[j] for j in range(i + 1, len(A)))  # Сумма после i
+            x[i] = (b[i] - sum1 - sum2) / A[i][i]  # Обновляем x[i]
+            print(f"Вектор погрешности: {x}")
+            k+=1
+
+        diff = max(abs(x[i] - x_old[i]) for i in range(len(A)))
+    print(f"Норма матрицы:{euclidean_norm(A)}")
+    print(f"Количество иттераций:{k}")
+    print(f"Вектор решений:{x}")
+
+    return x
 
 
 start_string =\
@@ -161,11 +200,13 @@ if input_str == "i":
             print("Введите правильные значения для матрицы")
             continue
         break
-    # print_matrix(matrix)
     #---------------------------------------------------------
 
     # Получаем точность
-    accuracy = get_accuracy()
+    accuracy = get_accuracy(input_str)
+
+    print(method_Gauss_Zeidel(matrix, b_vec, accuracy))
+
 
 elif input_str == "f":
     start_string =\
@@ -195,7 +236,7 @@ elif input_str == "f":
         try:
             with open(file_path, "r") as file:
                 file_open = file.read()
-                file_content = file_open.splitlines()
+                file_content = [line.replace(',', '.') for line in file_open.splitlines()]
 
                 n = get_n(input_str, file_content[0])
                 b_vec, matrix = get_matrix(input_str, n, file_content)
@@ -203,7 +244,10 @@ elif input_str == "f":
                 break
         except FileNotFoundError:
             print("По данному пути не существует файла")
-    method_Gauss_Zeidel(matrix, b_vec, accuracy)
+        except PermissionError:
+            print("Недостаточно прав для открытия файла")
+
+    print(method_Gauss_Zeidel(matrix, b_vec, accuracy))
 
 else:
-    print("fuck you")
+    print("СКИИИИИИИИИИИИИП")
