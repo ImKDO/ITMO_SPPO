@@ -1,46 +1,69 @@
+#include <strings.h>
+
+#include <algorithm>
+#include <cctype>
 #include <iostream>
-#include <stack>
-#include <unordered_map>
 #include <vector>
 using namespace std;
 
+bool find_element(const vector<char>& v, char ch) {
+  for (char i : v) {
+    if (i == ch)
+      return true;
+  }
+  return false;
+}
+
 int main() {
-  string s;
-  cin >> s;
+  string str;
+  cin >> str;
+  vector<char> upper_letters;
+  vector<char> lower_letters;
 
-  stack<int> animalStack;
-  vector<int> result(s.size() / 2);
-  unordered_map<char, int> trapToIndex;
+  for (char ch = 'a'; ch <= 'z'; ++ch) {
+    lower_letters.push_back(ch);
+  }
+  for (char ch = 'A'; ch <= 'Z'; ++ch) {
+    upper_letters.push_back(ch);
+  }
 
-  for (size_t i = 0; i < s.size(); ++i) {
-    if (islower(s[i])) {
-      animalStack.push(i);
+  vector<char> stack_animals;
+  vector<char> stack_traps;
+  int n = str.length();
+  int n_half = n / 2;
+
+  vector<int> result;
+
+  for (int i = 0; i < n_half; ++i) {
+    if (find_element(upper_letters, str[i])) {
+      stack_traps.push_back(str[i]);
     } else {
-      if (animalStack.empty()) {
-        cout << "Impossible" << endl;
-        return 0;
-      }
-      if (islower(s[animalStack.top()])) {
-        cout << animalStack.top() + 1 << endl;
-        result[trapToIndex.size()] = animalStack.top() + 1;
-        trapToIndex[s[i]] = trapToIndex.size();
-        animalStack.pop();
-      } else {
-        cout << "Impossible" << endl;
-        return 0;
-      }
+      stack_animals.push_back(str[i]);
     }
+
+    if (find_element(lower_letters, str[n - i - 1])) {
+      stack_animals.push_back(str[n - i - 1]);
+    } else {
+      stack_traps.push_back(str[n - i - 1]);
+    }
+
+    if (!stack_animals.empty() && !stack_traps.empty() &&
+        toupper(stack_animals.back()) == stack_traps.back()) {
+      stack_animals.pop_back();
+      stack_traps.pop_back();
+      result.push_back(i + 1);
+        }
   }
 
-  if (!animalStack.empty()) {
+  if (!stack_animals.empty() || !stack_traps.empty()) {
     cout << "Impossible" << endl;
-    return 0;
+  } else {
+    cout << "Possible" << endl;
+    for (int i = result.size() - 1; i >= 0; --i) {
+      cout << result[i] << " ";
+    }
+    cout << endl;
   }
 
-  cout << "Possible" << endl;
-  for (int index : result) {
-    cout << index << " ";
-  }
-  cout << endl;
   return 0;
 }
