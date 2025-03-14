@@ -57,7 +57,7 @@ class IntegrationCalculator:
             try:
                 return eval(func_str.replace(",","."), {"__builtins__": None}, safe_dict)
             except Exception as e:
-                raise ValueError(f"Invalid function: {str(e)}")
+                raise ValueError(f"Invalid function: don't like func")
         return f
 
     def left_rectangle(self, f, a, b, n):
@@ -119,9 +119,9 @@ class IntegrationCalculator:
         try:
             # Get input values
             func_str = self.function_var.get()
-            a = float(self.a_var.get())
-            b = float(self.b_var.get())
-            tol = float(self.tolerance_var.get())
+            a = float(self.a_var.get().replace(",", "."))
+            b = float(self.b_var.get().replace(",", "."))
+            tol = float(self.tolerance_var.get().replace(",", "."))
             method = self.method_var.get()
 
             # Ensure a < b
