@@ -1,9 +1,10 @@
 from math import *
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import os
+import numpy as np
 
 from Eq import Eq
 from SystemEq import SystemEq
@@ -71,11 +72,11 @@ class EquationSolverApp:
         params_frame.pack(pady=10, padx=10, fill="x")
 
         ttk.Label(params_frame, text="Интервал от:").grid(row=0, column=0, padx=5, pady=2, sticky='e')
-        self.x_min = tk.DoubleVar(value=-1.5)
+        self.x_min = tk.DoubleVar(value=0.5)
         ttk.Entry(params_frame, textvariable=self.x_min, width=10).grid(row=0, column=1, padx=5, pady=2)
 
         ttk.Label(params_frame, text="до:").grid(row=0, column=2, padx=5, pady=2, sticky='e')
-        self.x_max = tk.DoubleVar(value=-1.0)
+        self.x_max = tk.DoubleVar(value=2.0)
         ttk.Entry(params_frame, textvariable=self.x_max, width=10).grid(row=0, column=3, padx=5, pady=2)
 
         ttk.Label(params_frame, text="Погрешность:").grid(row=1, column=0, padx=5, pady=2, sticky='e')
@@ -96,7 +97,6 @@ class EquationSolverApp:
         self.load_button = ttk.Button(params_frame, text="Загрузить из файла", command=self.load_from_file)
         self.load_button.grid(row=2, column=2, columnspan=2, padx=5, pady=5)
 
-        # Добавляем кнопку "Обновить график" в params_frame
         self.refresh_button = ttk.Button(params_frame, text="Обновить график", command=self.refresh_graph)
         self.refresh_button.grid(row=3, column=0, columnspan=4, padx=5, pady=5)
 
@@ -143,10 +143,6 @@ class EquationSolverApp:
         self.plot_graph_based_on_equation()
 
     def refresh_graph(self):
-        """
-        Метод, вызываемый при нажатии кнопки "Обновить график".
-        Перестраивает график на основе текущих значений интервала.
-        """
         self.plot_graph_based_on_equation()
 
     def linspace(self, start, stop, num):
@@ -185,54 +181,31 @@ class EquationSolverApp:
             return False, f"Ошибка верификации: {str(e)}"
 
     def verify_system_root_existence(self, eq_str, a, b, tol=1e-6):
-        """
-        Проверяет количество корней системы уравнений на заданном интервале.
-        Возвращает (bool, str, list), где:
-        - bool: True, если корень существует и он единственный, иначе False.
-        - str: сообщение о результате проверки.
-        - list: список найденных точек пересечения (x-координаты).
-        """
         try:
             eqs = eq_str.split(", ")
             if len(eqs) != 2:
-                return False, "Ошибка: строка должна содержать два уравнения, разделённых ', '", []
+                return False, "Ошибка: система должна содержать два уравнения, разделённых ', '", []
 
             system = SystemEq(eqs)
-            y0 = float(self.y0_var.get()) if self.y0_var.get() else 0.0
+            y_min, y_max = -5, 5  # Определяем интервал для y
+            n_points_x = 50
+            n_points_y = 50
+            x_vals = self.linspace(a, b, n_points_x)
+            y_vals = self.linspace(y_min, y_max, n_points_y)
 
-            # Разбиваем интервал на точки
-            n_points = 100  # Увеличиваем количество точек для точности
-            x_vals = self.linspace(a, b, n_points)
-            f1_vals = []
-            f2_vals = []
-
-            # Вычисляем значения f1(x, y0) и f2(x, y0) для каждой точки x
-            for xi in x_vals:
-                f1 = system.safe_eval(xi, y0, 0)  # f1(x, y0)
-                f2 = system.safe_eval(xi, y0, 1)  # f2(x, y0)
-                f1_vals.append(f1)
-                f2_vals.append(f2)
-
-            # Вычисляем разность f1 - f2
-            diff_vals = [f1 - f2 for f1, f2 in zip(f1_vals, f2_vals)]
-
-            # Считаем количество изменений знака разности
-            sign_changes = 0
+            # Ищем точки, где f1 и f2 близки к нулю
             intersections = []
-            for i in range(len(diff_vals) - 1):
-                if diff_vals[i] * diff_vals[i + 1] < 0:  # Изменение знака
-                    sign_changes += 1
-                    # Примерная x-координата пересечения (линейная интерполяция)
-                    x1, x2 = x_vals[i], x_vals[i + 1]
-                    d1, d2 = diff_vals[i], diff_vals[i + 1]
-                    # Находим x, где разность равна 0
-                    x_intersect = x1 - d1 * (x2 - x1) / (d2 - d1)
-                    intersections.append(x_intersect)
+            for x in x_vals:
+                for y in y_vals:
+                    f1 = system.safe_eval(x, y, 0)
+                    f2 = system.safe_eval(x, y, 1)
+                    if abs(f1) < 0.1 and abs(f2) < 0.1:  # Если обе функции близки к 0
+                        intersections.append((x, y))
 
-            if sign_changes == 0:
+            if not intersections:
                 return False, "Корень на интервале отсутствует.", []
-            elif sign_changes > 1:
-                return False, "На интервале несколько корней.", intersections
+            elif len(intersections) > 1:
+                return True, "На интервале несколько корней.", intersections
             else:
                 return True, "Корень существует.", intersections
 
@@ -247,26 +220,51 @@ class EquationSolverApp:
         print(f"Уравнения в newton_system: {eqs}")
 
         try:
-            x0 = float(self.x0_var.get().replace(",", "."))
-            y0 = float(self.y0_var.get().replace(",", "."))
+            x0 = float(self.x0_var.get())
+            y0 = float(self.y0_var.get())
         except ValueError:
             return "Ошибка: некорректное начальное приближение (x0 или y0)."
 
         # Проверяем количество корней
-        has_root, message, solutions = self.verify_system_root_existence(eq_str, x_min, x_max, tol)
-        if not has_root:
-            return message
+        has_root, message, intersections = self.verify_system_root_existence(eq_str, x_min, x_max, tol)
 
         system = SystemEq(eqs)
-        try:
-            result = system.newton_system(x0, y0, tol)
-            return f"x = {result[0]:.6f}, y = {result[1]:.6f}"
-        except ZeroDivisionError:
-            return "Ошибка: деление на ноль в методе Ньютона (возможно, Якобиан вырожденный)."
-        except ValueError as e:
-            return f"Ошибка: {str(e)}"
-        except Exception as e:
-            return f"Неизвестная ошибка: {str(e)}"
+
+        # Пробуем несколько начальных приближений
+        all_roots = []
+        y_variations = [y0 - 1.0, y0, y0 + 1.0]
+        x_attempts = [x0]
+        if intersections:
+            for x, y in intersections:
+                x_attempts.append(x)
+                y_variations.append(y)
+        x_attempts.append((x_min + x_max) / 2)
+
+        for x_start in x_attempts:
+            for y_var in y_variations:
+                try:
+                    x_root, y_root = system.newton_system(x_start, y_var, tol)
+                    if x_min <= x_root <= x_max:
+                        f1_val = system.safe_eval(x_root, y_root, 0)
+                        f2_val = system.safe_eval(x_root, y_root, 1)
+                        if abs(f1_val) < tol and abs(f2_val) < tol:
+                            is_unique = True
+                            for rx, ry in all_roots:
+                                if abs(x_root - rx) < tol and abs(y_root - ry) < tol:
+                                    is_unique = False
+                                    break
+                            if is_unique:
+                                all_roots.append((x_root, y_root))
+                except Exception as e:
+                    print(f"Метод Ньютона не сошёлся с x0={x_start}, y0={y_var}: {str(e)}")
+                    continue
+
+        if not all_roots:
+            return "Не удалось найти корень на заданном интервале."
+        elif len(all_roots) > 1:
+            return "На интервале несколько корней."
+        else:
+            return f"Найденный корень: x = {all_roots[0][0]:.6f}, y = {all_roots[0][1]:.6f}"
 
     def load_from_file(self):
         from tkinter import filedialog
@@ -278,7 +276,8 @@ class EquationSolverApp:
                     for line in lines:
                         line = line.strip()
                         if line and not line.startswith('#'):
-                            values = [i.replace(' ', '').replace(',', '.') for i in line.split(',')]
+                            values = [i.replace(',', '.') for i in line.split(',')]
+                            print(values)
                             if len(values) == 5:
                                 try:
                                     x_min = float(values[0].strip())
@@ -332,13 +331,12 @@ class EquationSolverApp:
 
                 self.current_eq = Eq(equation)
 
-                # Оптимизация x0: выбираем точку ближе к корню
                 fa = self.current_eq.safe_eval(x_min)
                 fb = self.current_eq.safe_eval(x_max)
                 if abs(fa) < abs(fb):
-                    x0 = x_min + 0.1 * (x_max - x_min)  # Ближе к x_min
+                    x0 = x_min + 0.1 * (x_max - x_min)
                 else:
-                    x0 = x_max - 0.1 * (x_max - x_min)  # Ближе к x_max
+                    x0 = x_max - 0.1 * (x_max - x_min)
 
                 if method == "Метод хорд":
                     result, iterations = self.current_eq.hord(x_min, x_max, error, track_iter=True)
@@ -353,12 +351,14 @@ class EquationSolverApp:
                         self.result_label.config(text="Не удалось найти подходящий k для сходимости")
                         return
                     result, iterations = self.current_eq.simple_iteration(x0, error, x_min, x_max, k, track_iter=True)
-            else:
+                self.display_result(result, self.current_eq.safe_eval(result), iterations, method, equation)
+            else:  # Система НУ
+                eqs = equation.split(", ")
+                if len(eqs) != 2:
+                    self.result_label.config(text="Ошибка: для системы НУ нужно указать два уравнения, разделённых ', '")
+                    return
                 result = self.newton_system(x_min, x_max, equation, error)
-                iterations = None
-
-            f_value = self.current_eq.safe_eval(result) if eq_type == "НУ" and result else None
-            self.display_result(result, f_value, iterations)
+                self.display_result(result, None, None, method, equation)
 
         except ZeroDivisionError:
             self.result_label.config(text="Ошибка: деление на ноль при решении.")
@@ -376,7 +376,6 @@ class EquationSolverApp:
             h = 1e-7
             x_vals = self.linspace(a, b, 100)
 
-            # Пробуем подобрать k
             k = 0.1
             max_attempts = 10
             attempt = 0
@@ -403,22 +402,43 @@ class EquationSolverApp:
         except Exception as e:
             return False, f"Неизвестная ошибка: {str(e)}", None
 
-    def display_result(self, result, f_value, iterations):
+    def display_result(self, result, f_value, iterations, e, m):
         output = ""
-        if isinstance(result, str) and "Ошибка" in result:
-            output = result
-        else:
-            output = f"Найденный корень: {result}\n"
-            if f_value is not None:
-                output += f"Значение функции в корне: {f_value:.6f}\n"
-            if iterations is not None:
-                output += f"Количество итераций: {iterations}\n"
 
+        if isinstance(result, str):
+            output = result
+            output += f"\nУравнение: {m}\n"
+            output += f"Уравнение решенное методом: {e}\n"
+        else:
+            output += f"\nУравнение: {m}\n"
+            output += f"Уравнение решенное методом: {e}\n"
+            output = f"\nНайденный корень: x = {result:.6f}\n"
+            if f_value is not None:
+                output += f"\nУравнение: {e}\n"
+                output += f"Уравнение решенное методом: {m}\n"
+                output += f"\nЗначение функции в корне: {f_value:.6f}\n"
+            if iterations is not None:
+                output += f"\nКоличество итераций: {iterations}\n"
         if self.save_to_file_var.get():
+
             try:
-                with open("result.txt", "w", encoding="utf-8") as f:
-                    f.write(output)
-                self.result_label.config(text="Результаты сохранены в result.txt")
+                # Открываем диалог выбора файла
+                root = tk.Tk()
+                root.withdraw()  # Скрываем основное окно
+
+                file_path = filedialog.asksaveasfilename(
+                    defaultextension=".txt",
+                    filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+                    title="Сохранить результаты"
+                )
+
+                if file_path:  # Если пользователь выбрал файл
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        f.write(output)
+                    self.result_label.config(text=f"Результаты сохранены в {file_path}")
+                else:  # Если пользователь отменил выбор
+                    self.result_label.config(text="Сохранение отменено пользователем")
+
             except Exception as e:
                 self.result_label.config(text=f"Ошибка сохранения в файл: {str(e)}")
         else:
@@ -426,9 +446,9 @@ class EquationSolverApp:
 
     def plot_graph_based_on_equation(self):
         equation = self.eq_var.get()
-        print(self.x_min.get())
         x_min = self.x_min.get()
         x_max = self.x_max.get()
+        error = self.error.get()
 
         if not equation or x_min >= x_max:
             self.result_label.config(text="Ошибка: некорректный интервал или уравнение не выбрано.")
@@ -438,45 +458,112 @@ class EquationSolverApp:
             widget.destroy()
 
         try:
+            fig, ax = plt.subplots()
+            x = self.linspace(x_min, x_max, 1000)
+
             if self.type_var.get() == "НУ":
                 self.current_eq = Eq(equation)
-                x = self.linspace(x_min, x_max, 1000)
                 y = []
+                roots = []
                 for xi in x:
                     val = self.current_eq.safe_eval(xi)
                     y.append(min(max(val, -1e6), 1e6))
 
-                fig, ax = plt.subplots()
+                has_root, message = self.verify_root_existence(equation, x_min, x_max)
+                if has_root:
+                    root, _ = self.current_eq.hord(x_min, x_max, error, track_iter=True)
+                    roots.append(root)
+
                 ax.plot(x, y, label="Уравнение")
-                ax.axhline(y=0, color='k', linestyle='-', alpha=0.3)
-                ax.legend()
-                ax.grid(True)
-                # Устанавливаем пределы по оси x
-                ax.set_xlim(x_min, x_max)
+                if roots:
+                    ax.scatter(roots, [0] * len(roots), color='red', zorder=5, label='Корень')
+
+                y_min = min(y)
+                y_max = max(y)
+                padding = 0.1 * (y_max - y_min) if y_max != y_min else 1.0
+                ax.set_ylim(y_min - padding, y_max + padding)
 
             else:  # Система НУ
                 y_x = equation.split(", ")
-                fig, ax = plt.subplots()
-                x = self.linspace(x_min, x_max, 1000)
-                # Используем SystemEq для системы уравнений
+                if len(y_x) != 2:
+                    self.result_label.config(text="Ошибка: система должна содержать два уравнения.")
+                    return
+
                 system = SystemEq(y_x)
-                # Получаем начальное значение y0 из поля ввода
                 y0 = float(self.y0_var.get()) if self.y0_var.get() else 0.0
                 x0 = float(self.x0_var.get()) if self.x0_var.get() else 0.0
-                for eq_index, e in enumerate(y_x):
-                    e = e.strip()
-                    y = []
-                    for xi in x:
-                        # Подставляем фиксированное y0 и текущий x
-                        val = system.safe_eval(xi, y0, eq_index)
-                        y.append(min(max(val, -1e6), 1e6))
-                    ax.plot(x, y, label=f"f{eq_index + 1}(x, y={y0})")
 
-                ax.axhline(y=0, color='k', linestyle='-', alpha=0.3)
-                ax.legend()
-                ax.grid(True)
-                # Устанавливаем пределы по оси x
-                ax.set_xlim(x_min, x_max)
+                # Определяем сетку для построения контурных линий
+                y_min, y_max = -5, 5  # Расширим интервал по y
+                x_vals = np.linspace(x_min, x_max, 100)
+                y_vals = np.linspace(y_min, y_max, 100)
+                X, Y = np.meshgrid(x_vals, y_vals)
+                F1 = np.zeros_like(X)
+                F2 = np.zeros_like(X)
+
+                for i in range(X.shape[0]):
+                    for j in range(X.shape[1]):
+                        F1[i, j] = system.safe_eval(X[i, j], Y[i, j], 0)
+                        F2[i, j] = system.safe_eval(X[i, j], Y[i, j], 1)
+
+                # Строим контурные линии для f1(x, y) = 0 и f2(x, y) = 0
+                contour1 = ax.contour(X, Y, F1, levels=[0], colors='blue')
+                contour2 = ax.contour(X, Y, F2, levels=[0], colors='green')
+
+                # Создаём легенду вручную
+                from matplotlib.lines import Line2D
+                legend_elements = [
+                    Line2D([0], [0], color='blue', lw=2, label='f1(x, y) = 0'),
+                    Line2D([0], [0], color='green', lw=2, label='f2(x, y) = 0')
+                ]
+
+                # Находим корни
+                roots_x = []
+                roots_y = []
+                n_points = 30
+                x_test = self.linspace(x_min, x_max, n_points)
+                y_variations = [y0 - 1.0, y0, y0 + 1.0]
+
+                for i in range(n_points - 1):
+                    x_start = x_test[i]
+                    x_end = x_test[i + 1]
+                    has_root, message, intersections = self.verify_system_root_existence(equation, x_start, x_end, error)
+                    if has_root and intersections:
+                        for x_start, y_var in intersections:
+                            try:
+                                x_root, y_root = system.newton_system(x_start, y_var, error)
+                                if x_min <= x_root <= x_max and y_min <= y_root <= y_max:
+                                    f1_val = system.safe_eval(x_root, y_root, 0)
+                                    f2_val = system.safe_eval(x_root, y_root, 1)
+                                    if abs(f1_val) < error and abs(f2_val) < error:
+                                        is_unique = True
+                                        for rx, ry in zip(roots_x, roots_y):
+                                            if abs(x_root - rx) < error and abs(y_root - ry) < error:
+                                                is_unique = False
+                                                break
+                                        if is_unique:
+                                            roots_x.append(x_root)
+                                            roots_y.append(y_root)
+                            except Exception as e:
+                                print(f"Метод Ньютона не сошёлся на подинтервале [{x_start}, {x_end}] с y={y_var}: {str(e)}")
+                                continue
+
+                # Отображаем корень только если он один
+                if len(roots_x) == 1:
+                    ax.scatter(roots_x, roots_y, color='red', zorder=5, s=100, marker='o')
+                    ax.annotate(f'({roots_x[0]:.3f}, {roots_y[0]:.3f})', (roots_x[0], roots_y[0]), textcoords="offset points", xytext=(0, 10), ha='center', fontsize=8)
+                    legend_elements.append(Line2D([0], [0], marker='o', color='w', markerfacecolor='red', markersize=10, label='Корень'))
+
+                # Добавляем легенду
+                ax.legend(handles=legend_elements)
+
+                ax.set_xlabel('x')
+                ax.set_ylabel('y')
+
+            ax.axhline(y=0, color='k', linestyle='-', alpha=0.3)
+            ax.axvline(x=0, color='k', linestyle='-', alpha=0.3)
+            ax.grid(True)
+            ax.set_xlim(x_min, x_max)
 
             canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
             canvas.draw()
@@ -486,7 +573,6 @@ class EquationSolverApp:
             self.result_label.config(text="Ошибка: деление на ноль при построении графика.")
         except Exception as e:
             self.result_label.config(text=f"Ошибка построения графика: {str(e)}")
-
 
 if __name__ == "__main__":
     root = tk.Tk()
